@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function getContextId() {
+    var ca = document.cookie.split(';');
+    var cid = 1;
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf('context_id') === 0) {
+            cid = 0;
+        }
+    }
+    if (cid == 1) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "http://localhost:9000/contextid", false);
+        xmlhttp.send();
+    }
+}
+
+function myFunction() {
+    getContextId();
+    var path = window.location.pathname;
+    var page = path.split("/").pop();
+    var img = new Image(1, 1);
+    img.src = 'http://localhost:9000/_.gif?pageName=' + page + '&action=pageView';
+	document.body.insertBefore(img, document.body.firstChild);
+}
+</script>
+</head>
+
+<body onload="myFunction()">
+<h1>Hello World!</h1>
+</body>
+
+</html>
