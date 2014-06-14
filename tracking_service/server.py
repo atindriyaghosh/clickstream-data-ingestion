@@ -24,9 +24,6 @@ class TrackingPixelHandler(BaseHTTPRequestHandler):
 		if(path == '/_.gif'):
 			logEvent(self, parsed_path)
 			
-		if(path == '/contextid'):
-			generateContextId(self)
-			
 		if(path == '/index.html'):
 			servePage(self)
 
@@ -78,15 +75,23 @@ def generateContextId(self):
 	context_id = uuid.uuid4()
 	cookie["context_id"] = context_id
 	print cookie.output()
-	self.send_response(200)
 	self.wfile.write(cookie.output())
 	self.end_headers()
-			
+	
 def servePage(self):
 	try:
 		f = open('index.html')
 		self.send_response(200)
 		self.send_header('Content-Type', 'text/html')
+		if "Cookie" in self.headers:
+			cookie = Cookie.SimpleCookie(self.headers["Cookie"])
+			try:
+				context_id = cookie['context_id'].value
+				self.end_headers()
+			except KeyError:
+				generateContextId(self)
+		else:
+			generateContextId(self)
 		self.end_headers()
 		self.wfile.write(f.read())
 	except IOError:
