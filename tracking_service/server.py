@@ -36,13 +36,13 @@ def logEvent(self, parsed_path):
 	server_time = str(now.year) + "-" + str(now.month) + "-" + str(now.day) + "-"  + str(now.hour) + "-" + str(now.minute) + "-" + str(now.second)
 	
 	## Get context_id from Cookie
-	context_id = "-"
+	user_id = "-"
 	if "Cookie" in self.headers:
 		cookie = Cookie.SimpleCookie(self.headers["Cookie"])
 		try:
-			context_id = cookie['context_id'].value
+			user_id = cookie['user_id'].value
 		except KeyError:
-			print 'No context_id set in cookie'
+			print 'No user_id set in cookie'
 	
 	query_params = urlparse.parse_qs(parsed_path.query)
 	
@@ -62,7 +62,7 @@ def logEvent(self, parsed_path):
 	delimiter = '|'
 	
 	## Construct event
-	event = "event_id=%s%scontext_id=%s%spage_name=%s%saction=%s%sserver_time=%s" % (event_id, delimiter, context_id, delimiter, page_name, delimiter, action, delimiter, server_time)
+	event = "event_id=%s%suser_id=%s%spage_name=%s%saction=%s%sserver_time=%s" % (event_id, delimiter, user_id, delimiter, page_name, delimiter, action, delimiter, server_time)
 	
 	## Log event
 	print event
@@ -70,10 +70,10 @@ def logEvent(self, parsed_path):
 	self.send_response(200)
 	self.end_headers()
 
-def generateContextId(self):
+def generateUserId(self):
 	cookie = Cookie.SimpleCookie()
-	context_id = uuid.uuid4()
-	cookie["context_id"] = context_id
+	user_id = uuid.uuid4()
+	cookie["user_id"] = user_id
 	print cookie.output()
 	self.wfile.write(cookie.output())
 	self.end_headers()
@@ -86,12 +86,12 @@ def servePage(self):
 		if "Cookie" in self.headers:
 			cookie = Cookie.SimpleCookie(self.headers["Cookie"])
 			try:
-				context_id = cookie['context_id'].value
+				user_id = cookie['user_id'].value
 				self.end_headers()
 			except KeyError:
-				generateContextId(self)
+				generateUserId(self)
 		else:
-			generateContextId(self)
+			generateUserId(self)
 		self.end_headers()
 		self.wfile.write(f.read())
 	except IOError:
