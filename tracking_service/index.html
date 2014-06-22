@@ -6,8 +6,9 @@
 			var path = window.location.pathname;
 			var page = path.split("/").pop();
 			var img = new Image(1, 1);
-			img.src = 'http://localhost:9000/_.gif?pageName=' + page + '&action=pageView';
-			document.body.insertBefore(img, document.body.firstChild);
+			var queryParams = 'pageName=' + page + '&action=pageView'
+			img.src = 'http://localhost:9000/_.gif?' + queryParams;
+			document.body.insertAfter(img, document.body.firstChild);
 		}
 	</script>
 </head>

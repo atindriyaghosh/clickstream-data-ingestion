@@ -1,6 +1,6 @@
 from BaseHTTPServer import BaseHTTPRequestHandler
 from BaseHTTPServer import HTTPServer
-from datetime import datetime
+from time import gmtime, strftime
 import urlparse
 import logging
 import logging.handlers
@@ -23,6 +23,8 @@ class TrackingPixelHandler(BaseHTTPRequestHandler):
 		
 		if(path == '/_.gif'):
 			logEvent(self, parsed_path)
+			self.send_response(200)
+			self.end_headers()
 			
 		if(path == '/index.html'):
 			servePage(self)
@@ -32,8 +34,7 @@ def logEvent(self, parsed_path):
 	event_id = uuid.uuid1()
 	
 	## Get Server Time
-	now = datetime.utcnow()
-	server_time = str(now.year) + "-" + str(now.month) + "-" + str(now.day) + "-"  + str(now.hour) + "-" + str(now.minute) + "-" + str(now.second)
+	server_time = strftime("%Y-%m-%dT%H:%M:%S", gmtime())
 	
 	## Get context_id from Cookie
 	user_id = "-"
@@ -67,8 +68,6 @@ def logEvent(self, parsed_path):
 	## Log event
 	print event
 	logger.info(event)
-	self.send_response(200)
-	self.end_headers()
 
 def generateUserId(self):
 	cookie = Cookie.SimpleCookie()
