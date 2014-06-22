@@ -1,13 +1,8 @@
 # Clickstream Data Ingestion #
 
-----------
-
-
 This repository contains code implementations of the concepts explained in my blog. 
 
 ## Directory Structure ##
-
-----------
 
 1. **clickstream-data-capture**: Code implementation for capturing clickstream data using Python and JavaScript
 		
