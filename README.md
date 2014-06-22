@@ -1,6 +1,6 @@
 # Clickstream Data Ingestion #
 
-This repository contains code implementations of the concepts explained in my blog. 
+This repository contains code implementations of the concepts related to clickstream data ingestion explained in my blog. 
 
 ## Directory Structure ##
 
