@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script>
+		function hitTrackingPixel() {
+			var path = window.location.pathname;
+			var page = path.split("/").pop();
+			var img = new Image(1, 1);
+			var queryParams = 'pageName=' + page + '&action=pageView'
+			img.src = 'http://localhost:9000/_.gif?' + queryParams;
+			document.body.insertAfter(img, document.body.firstChild);
+		}
+	</script>
+</head>
+
+<body onload="hitTrackingPixel()">
+	<h1>Hello World!</h1>
+</body>
+
+</html>
