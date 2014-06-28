@@ -21,14 +21,16 @@ class TrackingPixelHandler(BaseHTTPRequestHandler):
 		parsed_path = urlparse.urlparse(self.path)
 		path = parsed_path.path
 		
+		## Handler for tracking pixel
 		if(path == '/_.gif'):
 			logEvent(self, parsed_path)
 			self.send_response(200)
 			self.end_headers()
+		else:
+			## Handler for all other pages
+			file = path[1:] + '.html'
+			servePage(self, file)
 			
-		if(path == '/index.html'):
-			servePage(self)
-
 def logEvent(self, parsed_path):
 	## Generate Event Id
 	event_id = uuid.uuid1()
@@ -65,6 +67,16 @@ def logEvent(self, parsed_path):
 	## Construct event
 	event = "event_id=%s%suser_id=%s%spage_name=%s%saction=%s%sserver_time=%s" % (event_id, delimiter, user_id, delimiter, page_name, delimiter, action, delimiter, server_time)
 	
+	## Get search term from query parameters
+	if(query_params.has_key('searchTerm')):
+		searchTerm = query_params.get('searchTerm')[0]
+		event = '%s%ssearchTerm=%s' % (event, delimiter, searchTerm)
+
+	## Get email from query parameters
+	if(query_params.has_key('email')):
+		email = query_params.get('email')[0]
+		event = '%s%semail=%s' % (event, delimiter, email)
+	
 	## Log event
 	print event
 	logger.info(event)
@@ -73,13 +85,12 @@ def generateUserId(self):
 	cookie = Cookie.SimpleCookie()
 	user_id = uuid.uuid4()
 	cookie["user_id"] = user_id
-	print cookie.output()
 	self.wfile.write(cookie.output())
 	self.end_headers()
 	
-def servePage(self):
+def servePage(self, pageName):
 	try:
-		f = open('index.html')
+		f = open(pageName)
 		self.send_response(200)
 		self.send_header('Content-Type', 'text/html')
 		if "Cookie" in self.headers:

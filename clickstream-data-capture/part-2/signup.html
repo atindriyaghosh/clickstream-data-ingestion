@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script>
+		function captureSignUpEvent() {
+			var path = window.location.pathname;
+			var page = path.split("/").pop();
+			var email = getEmail(window.location.search.substring(1));
+			var img = new Image(1, 1);
+			var queryParams = 'pageName=' + page + '&action=signup&email=' + email;
+			img.src = 'http://localhost:9000/_.gif?' + queryParams;
+			document.getElementById("trackingPixel").appendChild(img);
+		}
+		
+		function getEmail(queryString){
+			var queries = queryString.split("&");
+			var email;
+			for (var i = 0; i < queries.length; i++ ) {				
+				if(queries[i].indexOf("email") > -1){
+					var temp = queries[i].split('=');
+					email = temp[1];
+					break;
+				}
+			}
+			return email;
+		}
+	</script>
+</head>
+
+<body onload="captureSignUpEvent()">
+	<h1>Thank you for signing up!!</h1>
+	<br/>
+	<a href="/home">Home</a>
+	<div id="trackingPixel"></div>
+</body>
+
+</html>
