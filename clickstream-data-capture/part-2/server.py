@@ -3,32 +3,35 @@ from BaseHTTPServer import HTTPServer
 from time import gmtime, strftime
 import urlparse
 import logging
-from flumelogger import handler
+import logging
+import logging.handlers
 import uuid
 import Cookie
-import os
 
-## Use flumelogger to log the click events to Python
 logger = logging.getLogger('')
 logger.setLevel(logging.INFO)
-fh = handler.FlumeHandler(host='localhost', port=4141, type='ng', headers={'application': 'clickstream-event-ingestion'})
+# Add the log message handler to the logger
+handler = logging.handlers.RotatingFileHandler('/var/log/tracking_logs/server.log', maxBytes=10485760, backupCount=20)
 formatter = logging.Formatter("%(message)s")
-fh.setFormatter(formatter)
-logger.addHandler(fh)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 class TrackingPixelHandler(BaseHTTPRequestHandler):	
     def do_GET(self):
 		parsed_path = urlparse.urlparse(self.path)
 		path = parsed_path.path
-		
+
 		## Handler for tracking pixel
 		if(path == '/_.gif'):
 			logEvent(self, parsed_path)
 			self.send_response(200)
+			self.send_header('Content-Type', 'image/gif')
 			self.end_headers()
+		elif (path == '/style.css'):
+			serveCSS(self, 'web/css/style.css')
 		else:
 			## Handler for all other pages
-			file = path[1:] + '.html'
+			file = 'web/html/' + path[1:] + '.html'
 			servePage(self, file)
 			
 def logEvent(self, parsed_path):
@@ -77,6 +80,11 @@ def logEvent(self, parsed_path):
 		email = query_params.get('email')[0]
 		event = '%s%semail=%s' % (event, delimiter, email)
 	
+	## Get name from query parameters
+	if(query_params.has_key('name')):
+		name = query_params.get('name')[0]
+		event = '%s%sname=%s' % (event, delimiter, name)
+	
 	## Log event
 	print event
 	logger.info(event)
@@ -106,7 +114,17 @@ def servePage(self, pageName):
 		self.wfile.write(f.read())
 	except IOError:
 		self.send_error(404, 'file not found')
-		
+
+def serveCSS(self, pageName):
+	try:
+		f = open(pageName)
+		self.send_response(200)
+		self.send_header('Content-Type', 'text/css')
+		self.end_headers()
+		self.wfile.write(f.read())
+	except IOError:
+		self.send_error(404, 'file not found')
+	
 if __name__ == '__main__':    
     server = HTTPServer(('', 9000), TrackingPixelHandler)
     print 'Starting server, use <Ctrl-C> to stop'

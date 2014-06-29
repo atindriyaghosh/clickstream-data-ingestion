@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="/style.css" />
+	<script>
+		function captureSignUpEvent() {
+			var path = window.location.pathname;
+			var page = path.split("/").pop();
+			var map = getNameAndEmail(window.location.search.substring(1));
+			var img = new Image(1, 1);
+			var queryParams = "pageName=" + page + "&action=signup&name=" + map["name"] + "&email=" + map["email"];
+			img.src = "http://localhost:9000/_.gif?" + queryParams;
+			document.getElementById("trackingPixel").appendChild(img);
+		}		
+		function getNameAndEmail(queryString){
+			var queries = queryString.split("&");
+			var map = new Object();
+			var email;
+			for (var i = 0; i < queries.length; i++ ) {				
+				if(queries[i].indexOf("email") > -1){
+					var temp = queries[i].split('=');
+					map["email"] = temp[1];
+				}
+				if(queries[i].indexOf("name") > -1){
+					var temp = queries[i].split('=');
+					map["name"] = temp[1];
+				}
+			}
+			return map;
+		}
+	</script>
+</head>
+
+<body onload="captureSignUpEvent()">
+	<div class="global-header">
+		<div class="home-link">
+			<a href="/home">home</a>
+		</div>
+		<div class="search">
+			<form action="/search">
+				<input type="search" name="searchTerm" placeholder="Search" />
+				<input type="submit" />
+			</form>
+		</div>
+	</div>
+	<div class="global-body">
+		<main class="main-body">
+			<div class="page-header">
+				<h1>Welcome!</h1>
+			</div>
+			<br/>
+			<div id="newsletter">
+				<p>Thanks for signing up!</p>
+			</div>
+			<div class="posts">
+				<a href="/posts/the-dude-abides"><h2>The Dude Abides</h2></a>
+				<p>Lebowski ipsum. The Dude abides. And so, Theodore Donald Karabotsos, in accordance with what we think your dying wishes might well have been, we commit your mortal remains to the bosom of the Pacific Ocean, which you loved so well. Yeah man. Call the medics, Dude. HERE'S WHAT HAPPENS, LARRY! No, the, uh, police chief of Malibu. A real reactionary.<p>
+				<a href="/posts/the-dude-abides"><h3>Read More</h3></a>
+				<br/>
+			</div>
+		</main>
+	</div>
+	<div id="trackingPixel"></div>
+</body>
+
+</html>

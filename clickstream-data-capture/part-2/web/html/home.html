@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="/style.css" />
+	<script>
+		function capturePageViewEvent() {
+			var path = window.location.pathname;
+			var page = path.split("/").pop();
+			var img = new Image(1, 1);
+			var queryParams = "pageName=" + page + "&action=pageView";
+			img.src = "http://localhost:9000/_.gif?" + queryParams;
+			document.getElementById("trackingPixel").appendChild(img);
+		}
+	</script>
+</head>
+
+<body onload="capturePageViewEvent()">
+	<div class="global-header">
+		<div class="home-link">
+			<a href="/home">home</a>
+		</div>
+		<div class="search">
+			<form action="/search">
+				<input type="search" name="searchTerm" placeholder="Search" />
+				<input type="submit" />
+			</form>
+		</div>
+	</div>
+	<div class="global-body">
+		<main class="main-body">
+			<div class="page-header">
+				<h1>Welcome!</h1>
+			</div>
+			<br/>
+			<div id="newsletter">
+				<form action="/signup">
+					Sign Up for the Newsletter <input type="text" name="name" placeholder="Name">
+					<input type="email" name="email" placeholder="Email">
+					<input type="submit" value="Sign Up">
+				</form>
+			</div>
+			<div class="posts">
+				<a href="/posts/the-dude-abides"><h2>The Dude Abides</h2></a>
+				<p>Lebowski ipsum. The Dude abides. And so, Theodore Donald Karabotsos, in accordance with what we think your dying wishes might well have been, we commit your mortal remains to the bosom of the Pacific Ocean, which you loved so well. Yeah man. Call the medics, Dude. HERE'S WHAT HAPPENS, LARRY! No, the, uh, police chief of Malibu. A real reactionary.<p>
+				<a href="/posts/the-dude-abides"><h3>Read More</h3></a>
+				<br/>
+			</div>
+		</main>
+	</div>
+	<div id="trackingPixel"></div>
+</body>
+
+</html>

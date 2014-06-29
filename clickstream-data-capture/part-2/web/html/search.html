@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="/style.css" />
+	<script>
+		function captureSearchTermEvent() {
+			var path = window.location.pathname;
+			var page = path.split("/").pop();
+			var searchTerm = getSearchTerm(window.location.search.substring(1));
+			var img = new Image(1, 1);
+			var queryParams = "pageName=" + page + "&action=search&searchTerm=" + searchTerm;
+			img.src = "http://localhost:9000/_.gif?" + queryParams;
+			document.getElementById("trackingPixel").appendChild(img);
+		}
+		
+		function getSearchTerm(queryString){
+			var queries = queryString.split("&");
+			var searchTerm;
+			for (var i = 0; i < queries.length; i++ ) {				
+				if(queries[i].indexOf("searchTerm") > -1){
+					var temp = queries[i].split('=');
+					searchTerm = temp[1];
+					break;
+				}
+			}
+			return searchTerm;
+		}
+	</script>
+</head>
+
+<body onload="captureSearchTermEvent()">
+	<div class="global-header">
+		<div class="home-link">
+			<a href="/home">home</a>
+		</div>
+		<div class="search">
+			<form action="/search">
+				<input type="search" name="searchTerm" placeholder="Search" />
+				<input type="submit" />
+			</form>
+		</div>
+	</div>
+	<div class="global-body">
+		<main class="main-body">
+			<div class="page-header">
+				<h1>Search Results</h1>
+			</div>
+			<br/>
+			<div id="searchResults">
+				<table>
+					<tr><td>Result 1</td></tr>
+					<tr><td>Result 2</td></tr>
+					<tr><td>Result 3</td></tr>
+					<tr><td>Result 4</td></tr>
+					<tr><td>Result 5</td></tr>
+					<tr><td>Result 6</td></tr>
+				</table>
+			</div>
+		</main>
+	</div>
+	<div id="trackingPixel"></div>
+</body>
+
+</html>
