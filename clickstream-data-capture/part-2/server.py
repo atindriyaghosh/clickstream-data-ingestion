@@ -7,11 +7,13 @@ import logging
 import logging.handlers
 import uuid
 import Cookie
+import sys
 
 logger = logging.getLogger('')
 logger.setLevel(logging.INFO)
 # Add the log message handler to the logger
-handler = logging.handlers.RotatingFileHandler('/var/log/tracking_logs/server.log', maxBytes=10485760, backupCount=20)
+log_path = sys.argv[1]
+handler = logging.handlers.RotatingFileHandler(log_path, maxBytes=10485760, backupCount=20)
 formatter = logging.Formatter("%(message)s")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
